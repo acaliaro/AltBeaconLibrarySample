@@ -1,4 +1,6 @@
-﻿using AltBeaconLibrarySample.ViewModel;
+﻿using System;
+using System.Globalization;
+using AltBeaconLibrarySample.ViewModel;
 using Behaviors;
 using Xamarin.Forms;
 
@@ -17,7 +19,7 @@ namespace AltBeaconLibrarySample.Page
 
 			Button buttonStart = new Button { Text = "START SCANNING BEACONS" };
 			buttonStart.SetBinding(Button.CommandProperty, "StartRangingCommand");
-			buttonStart.SetBinding(Button.IsEnabledProperty, "IsEnabled");
+			buttonStart.SetBinding(Button.TextProperty, new Binding("IsStartedRanging", converter: new IsStartedRangingToTextConverter()));
             Label labelInfo = new Label() { HorizontalOptions = LayoutOptions.Center, Text = "Beacons oredered by RSSI" };
 
 			StackLayout slHeader = new StackLayout() { Children = {buttonStart, labelInfo }  };
@@ -106,6 +108,26 @@ namespace AltBeaconLibrarySample.Page
 			}		
 
 		}
-	}
+
+        private class IsStartedRangingToTextConverter : IValueConverter
+        {
+            public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+
+                if(value != null && value is bool)
+                {
+                    if (((bool)value))
+                        return "STOP Scanning Beacons";
+                    return "START Scanning Beacons";
+                }
+                return "";
+            }
+
+            public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                throw new NotImplementedException();
+            }
+        }
+    }
 }
 

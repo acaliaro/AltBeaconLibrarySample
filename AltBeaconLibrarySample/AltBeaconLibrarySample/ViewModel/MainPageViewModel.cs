@@ -16,7 +16,7 @@ namespace AltBeaconLibrarySample.ViewModel
 {
 	public class MainPageViewModel : INotifyPropertyChanged
 	{
-		public bool IsEnabled { get; set; } = true;
+		public bool IsStartedRanging { get; set; }
 
 		public ObservableCollection<SharedBeacon> ReceivedBeacons { get; set; } = new ObservableCollection<SharedBeacon>();
 
@@ -110,8 +110,12 @@ namespace AltBeaconLibrarySample.ViewModel
         private void startRangingBeacon() {
 			var beaconService = Xamarin.Forms.DependencyService.Get<IAltBeaconService>();
 
-			beaconService.StartRanging();
-			IsEnabled = false;
+            if (!IsStartedRanging)
+                beaconService.StartRanging();
+            else
+                beaconService.StopRanging();
+
+            IsStartedRanging = !IsStartedRanging;
 		}
 
         private void updateBeaconCurrentDateTime(List<SharedBeacon> receivedBeacons,  DateTime now)

@@ -7,6 +7,7 @@ namespace AltBeaconLibrarySample.Interface
 		void InitializeService();	
 		void StartMonitoring();
 		void StartRanging();
+        void StopRanging();
         void SetBackgroundMode(bool isBackground);
         void OnDestroy();
         

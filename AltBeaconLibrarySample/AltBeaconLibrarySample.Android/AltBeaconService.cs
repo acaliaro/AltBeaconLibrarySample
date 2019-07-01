@@ -40,7 +40,8 @@ namespace AltBeaconLibrary.Sample.Droid.Services
 
 		public void InitializeService()
 		{
-			_beaconManager = InitializeBeaconManager();
+            if(_beaconManager == null)
+			    _beaconManager = InitializeBeaconManager();
 		}
 
 		private BeaconManager InitializeBeaconManager()
@@ -76,13 +77,12 @@ namespace AltBeaconLibrary.Sample.Droid.Services
             BeaconManagerImpl.BackgroundBetweenScanPeriod = 5000;
 
             BeaconManagerImpl.AddMonitorNotifier(_monitorNotifier);
-            _beaconManager.StartMonitoringBeaconsInRegion(_tagRegion);
-			_beaconManager.StartMonitoringBeaconsInRegion(_emptyRegion);
+            BeaconManagerImpl.StartMonitoringBeaconsInRegion(_tagRegion);
+            BeaconManagerImpl.StartMonitoringBeaconsInRegion(_emptyRegion);
 		}
 
 		public void StartRanging()
 		{
-
             BeaconManagerImpl.ForegroundBetweenScanPeriod = 100;
             BeaconManagerImpl.BackgroundScanPeriod = 500;
             BeaconManagerImpl.BackgroundBetweenScanPeriod = 30000;
@@ -91,12 +91,33 @@ namespace AltBeaconLibrary.Sample.Droid.Services
             BeaconManagerImpl.AddRangeNotifier(_rangeNotifier);
 			try
 			{
-				_beaconManager.StartRangingBeaconsInRegion(_tagRegion);
-				_beaconManager.StartRangingBeaconsInRegion(_emptyRegion);
+                BeaconManagerImpl.StartRangingBeaconsInRegion(_tagRegion);
+                BeaconManagerImpl.StartRangingBeaconsInRegion(_emptyRegion);
 			}
-			catch { }
+			catch(Exception ex) {
+
+                System.Diagnostics.Debug.WriteLine("StartRangingException: " + ex.Message);
+            }
 
 		}
+
+        public void StopRanging()
+        {
+            if(_beaconManager != null)
+            {
+                try
+                {
+                    BeaconManagerImpl.StopRangingBeaconsInRegion(_tagRegion);
+                    BeaconManagerImpl.StopRangingBeaconsInRegion(_emptyRegion);
+                    BeaconManagerImpl.RemoveRangeNotifier(_rangeNotifier);
+                }
+                catch (Exception ex)
+                {
+
+                    System.Diagnostics.Debug.WriteLine("StopRangingException: " + ex.Message);
+                }
+            }
+        }
 
 		private void DeterminedStateForRegionComplete(object sender, MonitorEventArgs e)
 		{
@@ -169,15 +190,15 @@ namespace AltBeaconLibrary.Sample.Droid.Services
         public void SetBackgroundMode(bool isBackground)
         {
             if (_beaconManager != null)
-                _beaconManager.BackgroundMode = isBackground;
+                BeaconManagerImpl.BackgroundMode = isBackground;
 
         }
 
         public void OnDestroy()
         {
 
-            if (_beaconManager != null && _beaconManager.IsBound((IBeaconConsumer)Plugin.CurrentActivity.CrossCurrentActivity.Current.Activity))
-                _beaconManager.Unbind((IBeaconConsumer)Plugin.CurrentActivity.CrossCurrentActivity.Current.Activity);
+            if (_beaconManager != null && BeaconManagerImpl.IsBound((IBeaconConsumer)Plugin.CurrentActivity.CrossCurrentActivity.Current.Activity))
+                BeaconManagerImpl.Unbind((IBeaconConsumer)Plugin.CurrentActivity.CrossCurrentActivity.Current.Activity);
 
         }
     }
