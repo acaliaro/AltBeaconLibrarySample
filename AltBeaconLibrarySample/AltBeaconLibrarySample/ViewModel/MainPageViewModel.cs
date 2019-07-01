@@ -42,8 +42,12 @@ namespace AltBeaconLibrarySample.ViewModel
 
                 MessagingCenter.Subscribe<App>(this, "CleanBeacons", (sender) =>
                 {
-                    updateBeaconCurrentDateTime(DateTime.Now);
-                    deleteOldBeacons();
+                    List<SharedBeacon> receivedBeacons = new List<SharedBeacon>(ReceivedBeacons);
+
+                    updateBeaconCurrentDateTime(receivedBeacons, DateTime.Now);
+                    deleteOldBeacons(receivedBeacons);
+
+                    ReceivedBeacons = convertToObservableCollection(receivedBeacons); 
                 });
 
                 MessagingCenter.Subscribe<App, List<SharedBeacon>>(this, "BeaconsReceived", (sender, arg) =>
@@ -52,33 +56,34 @@ namespace AltBeaconLibrarySample.ViewModel
                     {
                         System.Diagnostics.Debug.WriteLine("Received: " + ((List<SharedBeacon>)arg).Count);
                         List<SharedBeacon> temp = arg;
+                        List<SharedBeacon> receivedBeacons = new List<SharedBeacon>( ReceivedBeacons);
 
                         if (arg != null && arg.Count > 0)
                         {
 
                             DateTime now = DateTime.Now;
 
-                            updateBeaconCurrentDateTime(now);
+                            updateBeaconCurrentDateTime(receivedBeacons, now);
 
                             foreach (SharedBeacon sharedBeacon in arg)
                             {
 
                                 // Is the beacon already in list?
-                                var ret = ReceivedBeacons.Where(o => o.BluetoothAddress == sharedBeacon.BluetoothAddress).FirstOrDefault();
+                                var ret = receivedBeacons.Where(o => o.BluetoothAddress == sharedBeacon.BluetoothAddress).FirstOrDefault();
                                 if (ret != null) // Is present
                                 {
-                                    var index = ReceivedBeacons.IndexOf(ret);
-                                    ReceivedBeacons[index].Update(now, sharedBeacon.Distance, sharedBeacon.Rssi); // Update last received date time
+                                    var index = receivedBeacons.IndexOf(ret);
+                                    receivedBeacons[index].Update(now, sharedBeacon.Distance, sharedBeacon.Rssi); // Update last received date time
                                 }
                                 else
                                 {
-                                    ReceivedBeacons.Insert(0, sharedBeacon);
+                                    receivedBeacons.Insert(0, sharedBeacon);
                                 }
                             }
 
-                            deleteOldBeacons();
+                            deleteOldBeacons(receivedBeacons);
 
-                            ReceivedBeacons = new ObservableCollection<SharedBeacon>(ReceivedBeacons.OrderByDescending(o => o.Rssi).ToList());
+                            ReceivedBeacons = convertToObservableCollection(receivedBeacons);
 
                         }
 
@@ -94,35 +99,46 @@ namespace AltBeaconLibrarySample.ViewModel
             });
 		}
 
-		private void startRangingBeacon() {
+        private ObservableCollection<SharedBeacon> convertToObservableCollection(List<SharedBeacon> receivedBeacons)
+        {
+            if(receivedBeacons != null)
+                return new ObservableCollection<SharedBeacon>(receivedBeacons.OrderByDescending(o => o.Rssi));
+
+            return null;
+        }
+
+        private void startRangingBeacon() {
 			var beaconService = Xamarin.Forms.DependencyService.Get<IAltBeaconService>();
 
 			beaconService.StartRanging();
 			IsEnabled = false;
 		}
 
-        private void updateBeaconCurrentDateTime(DateTime now)
+        private void updateBeaconCurrentDateTime(List<SharedBeacon> receivedBeacons,  DateTime now)
         {
             // Update current received date time
-            foreach (SharedBeacon shared in ReceivedBeacons)
+            foreach (SharedBeacon shared in receivedBeacons)
                 shared.CurrentDateTime = now;
         }
 
-        private void deleteOldBeacons()
+        private void deleteOldBeacons(List<SharedBeacon> receivedBeacons)
         {
-            int count = ReceivedBeacons.Count;
-
-            // Delete old beacons
-            for (int ii = count - 1; ii >= 0; ii--)
+            if (receivedBeacons != null)
             {
-                try
+                int count = receivedBeacons.Count;
+
+                // Delete old beacons
+                for (int ii = count - 1; ii >= 0; ii--)
                 {
-                    if (ReceivedBeacons[ii].ForceDelete)
-                        ReceivedBeacons.RemoveAt(ii);
-                }
-                catch(Exception ex)
-                {
-                    System.Diagnostics.Debug.WriteLine(ex.Message);
+                    try
+                    {
+                        if (receivedBeacons[ii].ForceDelete)
+                            receivedBeacons.RemoveAt(ii);
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine(ex.Message);
+                    }
                 }
             }
         }
