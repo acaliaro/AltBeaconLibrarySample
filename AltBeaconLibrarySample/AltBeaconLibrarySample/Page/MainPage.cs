@@ -1,4 +1,5 @@
 ﻿using AltBeaconLibrarySample.ViewModel;
+using Behaviors;
 using Xamarin.Forms;
 
 namespace AltBeaconLibrarySample.Page
@@ -33,19 +34,20 @@ namespace AltBeaconLibrarySample.Page
             CompressedLayout.SetIsHeadless(sl, true);
 
             Content = sl;
-		}
 
-		protected override void OnAppearing()
-		{
-			_vm.OnAppearing();
-			base.OnAppearing();
-		}
+            InvokeCommandAction icaOnAppearing = new InvokeCommandAction();
+            icaOnAppearing.SetBinding(InvokeCommandAction.CommandProperty, "OnAppearingCommand");
+            EventHandlerBehavior ehbOnAppearing = new EventHandlerBehavior() { EventName = "Appearing" };
+            ehbOnAppearing.Actions.Add(icaOnAppearing);
 
-		protected override void OnDisappearing()
-		{
-			_vm.OnDisappearing();
-			base.OnDisappearing();
-		}
+            InvokeCommandAction icaOnDisappearing = new InvokeCommandAction();
+            icaOnDisappearing.SetBinding(InvokeCommandAction.CommandProperty, "OnDisappearingCommand");
+            EventHandlerBehavior ehbOnDisappearing = new EventHandlerBehavior() { EventName = "Disappearing" };
+            ehbOnDisappearing.Actions.Add(icaOnDisappearing);
+
+            this.Behaviors.Add(ehbOnAppearing);
+            this.Behaviors.Add(ehbOnDisappearing);
+        }
 
 		public class ViewCellBeacon : ViewCell
 		{
