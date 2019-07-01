@@ -147,7 +147,7 @@ namespace AltBeaconLibrary.Sample.Droid.Services
                 // Get all beacons and create the SharedBeacon
                 foreach (Beacon beacon in e.Beacons)
                 {
-                    System.Diagnostics.Debug.WriteLine(string.Format("NAME {0} {1}dB", beacon.BluetoothName, beacon.Rssi));
+                    System.Diagnostics.Debug.WriteLine(string.Format("NAME {0} - IP {1} - {2}dB", beacon.BluetoothName, beacon.BluetoothAddress, beacon.Rssi));
                     _sharedBeacons.Add(new SharedBeacon(beacon.BluetoothName, beacon.BluetoothAddress, beacon.Id1.ToString(), beacon.Id2.ToString(), beacon.Id3.ToString(), beacon.Distance, beacon.Rssi));
                 };
 

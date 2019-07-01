@@ -87,6 +87,8 @@ namespace AltBeaconLibrarySample.ViewModel
 
                         deleteOldBeacons();
 
+                        ReceivedBeacons = new ObservableCollection<SharedBeacon>( ReceivedBeacons.OrderByDescending(o => o.Rssi).ToList());
+
                     }
 
 				}

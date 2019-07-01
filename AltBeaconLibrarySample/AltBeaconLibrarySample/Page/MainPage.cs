@@ -17,8 +17,9 @@ namespace AltBeaconLibrarySample.Page
 			Button buttonStart = new Button { Text = "START SCANNING BEACONS" };
 			buttonStart.SetBinding(Button.CommandProperty, "StartRangingCommand");
 			buttonStart.SetBinding(Button.IsEnabledProperty, "IsEnabled");
+            Label labelInfo = new Label() { HorizontalOptions = LayoutOptions.Center, Text = "Beacons oredered by RSSI" };
 
-			StackLayout slHeader = new StackLayout() { Children = {buttonStart }  };
+			StackLayout slHeader = new StackLayout() { Children = {buttonStart, labelInfo }  };
 
 			ListView lv = new ListView { HasUnevenRows = true, SeparatorColor = Color.Black, SeparatorVisibility = SeparatorVisibility.Default, Header = slHeader };
 			lv.SetBinding(ListView.ItemsSourceProperty, "ReceivedBeacons");
@@ -53,7 +54,7 @@ namespace AltBeaconLibrarySample.Page
 			{
 
                 Label labelId1 = new Label();
-                labelId1.SetBinding(Label.TextProperty, "Id1");
+                labelId1.SetBinding(Label.TextProperty, new Binding("Id1", stringFormat: "Id1: {0}"));
 
                 Label labelBluetoothName = new Label { FontSize = 30 };
                 labelBluetoothName.SetBinding(Label.TextProperty, "BluetoothName");
@@ -66,7 +67,6 @@ namespace AltBeaconLibrarySample.Page
 
                 Label labelId3 = new Label();
                 labelId3.SetBinding(Label.TextProperty, new Binding("Id3", stringFormat: "Id3: {0}"));
-
 
 
                 Grid grid = new Grid();
