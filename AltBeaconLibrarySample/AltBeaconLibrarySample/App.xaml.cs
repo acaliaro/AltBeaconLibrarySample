@@ -57,16 +57,16 @@ namespace AltBeaconLibrarySample
             closeTimer();
         }
 
-        private void closeTimer()
-        {
-            _closeTimer = true;
-        }
-
         protected override void OnResume()
         {
             // Handle when your app resumes
             DependencyService.Get<IAltBeaconService>().SetBackgroundMode(false);
             startTimer();
+        }
+
+        private void closeTimer()
+        {
+            _closeTimer = true;
         }
     }
 }

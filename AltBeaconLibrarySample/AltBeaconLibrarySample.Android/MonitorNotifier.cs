@@ -33,25 +33,19 @@ namespace AltBeaconLibrary.Sample.Droid
 		private void OnDetermineStateForRegionComplete(int state, Region region)
 		{
 			if (DetermineStateForRegionComplete != null)
-			{
 				DetermineStateForRegionComplete(this, new MonitorEventArgs { State = state, Region = region });
-			}
 		}
 
 		private void OnEnterRegionComplete(Region region)
 		{
 			if (EnterRegionComplete != null)
-			{
 				EnterRegionComplete(this, new MonitorEventArgs { Region = region });
-			}
 		}
 
 		private void OnExitRegionComplete(Region region)
 		{
 			if (ExitRegionComplete != null)
-			{
 				ExitRegionComplete(this, new MonitorEventArgs{ Region = region });
-			}
 		}
 	}
 }

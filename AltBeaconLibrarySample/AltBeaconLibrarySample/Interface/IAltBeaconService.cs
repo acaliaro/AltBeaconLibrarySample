@@ -11,7 +11,5 @@ namespace AltBeaconLibrarySample.Interface
         void SetBackgroundMode(bool isBackground);
         void OnDestroy();
         
-        //event EventHandler<ListChangedEventArgs> ListChanged;
-		//event EventHandler DataClearing;
 	}
 }

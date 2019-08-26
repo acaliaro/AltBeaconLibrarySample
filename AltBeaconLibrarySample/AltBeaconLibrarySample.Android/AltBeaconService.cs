@@ -6,7 +6,6 @@ using AltBeaconLibrarySample;
 using AltBeaconLibrarySample.Interface;
 using Org.Altbeacon.Beacon;
 using AltBeaconLibrarySample.Model;
-using Xamarin.Forms;
 
 [assembly: Xamarin.Forms.Dependency(typeof(AltBeaconService))]
 namespace AltBeaconLibrary.Sample.Droid.Services
@@ -29,11 +28,10 @@ namespace AltBeaconLibrary.Sample.Droid.Services
 
 		public BeaconManager BeaconManagerImpl
 		{
-			get {
+			get
+            {
 				if (_beaconManager == null)
-				{
 					_beaconManager = InitializeBeaconManager();
-				}
 				return _beaconManager;
 			}
 		}
@@ -94,7 +92,8 @@ namespace AltBeaconLibrary.Sample.Droid.Services
                 BeaconManagerImpl.StartRangingBeaconsInRegion(_tagRegion);
                 BeaconManagerImpl.StartRangingBeaconsInRegion(_emptyRegion);
 			}
-			catch(Exception ex) {
+			catch(Exception ex)
+            {
 
                 System.Diagnostics.Debug.WriteLine("StartRangingException: " + ex.Message);
             }
